@@ -48,23 +48,27 @@ class Bender(
         val regex = Regex("\\d")
         val regex2 = Regex("[a-zA-zа-яА-яёЁ]")
         val regex3 = Regex("\\s")
-        when (question) {
-            Question.NAME -> {
-                return !answer[0].isLowerCase()
+        if (answer.isBlank()) {
+            return false
+        } else {
+            when (question) {
+                Question.NAME -> {
+                    return !answer[0].isLowerCase()
+                }
+                Question.PROFESSION -> {
+                    return !answer[0].isUpperCase()
+                }
+                Question.MATERIAL -> {
+                    return !regex.containsMatchIn(answer)
+                }
+                Question.BDAY -> {
+                    return !(regex2.containsMatchIn(answer) || regex3.containsMatchIn(answer))
+                }
+                Question.SERIAL -> {
+                    return !((regex2.containsMatchIn(answer) || regex3.containsMatchIn(answer)) || (answer.length != 7))
+                }
+                Question.IDLE -> return false
             }
-            Question.PROFESSION -> {
-                return !answer[0].isUpperCase()
-            }
-            Question.MATERIAL -> {
-                return !regex.containsMatchIn(answer)
-            }
-            Question.BDAY -> {
-                return !(regex2.containsMatchIn(answer) || regex3.containsMatchIn(answer))
-            }
-            Question.SERIAL -> {
-                return !((regex2.containsMatchIn(answer) || regex3.containsMatchIn(answer)) || (answer.length != 7))
-            }
-            Question.IDLE -> return false
         }
     }
 
