@@ -1,6 +1,8 @@
 package ru.skillbranch.devintensive.utils
 
+import android.content.Context
 import java.lang.StringBuilder
+import kotlin.math.roundToInt
 
 object Utils {
 
@@ -130,5 +132,25 @@ object Utils {
         } else {
             "$firstInitial$secondInitial"
         }
+    }
+
+    fun isValidUrlRepository(string: String): Boolean {
+
+        val regex =
+            Regex("""(https://|www\.|https://www\.)?github.com[/](?!pricing|enterprise|join|features|topics|collections|trending|events|marketplace|nonprofit|customer-stories|security|login)(?! )[a-zA-Z]+""")
+
+        return string.matches(regex)
+    }
+
+    fun convertPxToDp(context: Context, px: Int): Int {
+        return (px / context.resources.displayMetrics.density).roundToInt()
+    }
+
+    fun convertDpToPx(context: Context, dp: Float): Int {
+        return (dp * context.resources.displayMetrics.density).roundToInt()
+    }
+
+    fun convertSpToPx(context: Context, sp: Int): Int {
+        return sp * context.resources.displayMetrics.scaledDensity.roundToInt()
     }
 }
