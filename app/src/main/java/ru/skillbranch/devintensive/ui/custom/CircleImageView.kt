@@ -2,109 +2,121 @@ package ru.skillbranch.devintensive.ui.custom
 
 import android.content.Context
 import android.graphics.*
-import android.graphics.Bitmap.Config
-import android.graphics.PorterDuff.Mode
-import android.graphics.drawable.BitmapDrawable
 import android.util.AttributeSet
-import android.view.View
 import android.widget.ImageView
 import androidx.annotation.ColorInt
-import androidx.annotation.ColorRes
-import androidx.annotation.Dimension
-import androidx.annotation.Dimension.DP
-import androidx.core.content.ContextCompat
+import androidx.annotation.Px
 import androidx.core.graphics.drawable.toBitmap
-import ru.skillbranch.devintensive.App
+import androidx.core.graphics.toRectF
 import ru.skillbranch.devintensive.R
-import ru.skillbranch.devintensive.utils.Utils
-import kotlin.math.min
-
+import ru.skillbranch.devintensive.extensions.convertDpToPx
+import ru.skillbranch.devintensive.extensions.dpToPx
 
 class CircleImageView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0
-) :
-    ImageView(context, attrs, defStyleAttr) {
-    companion object {
-        private const val DEFAULT_BORDER_COLOR: Int = Color.WHITE
+) : ImageView(context, attrs, defStyleAttr) {
+
+    companion object{
+        private const val DEFAULT_BORDER_WIDTH = 2
+        private const val DEFAULT_BORDER_COLOR = Color.WHITE
+        private const val DEFAULT_SIZE = 40
     }
 
-    private var borderColor = DEFAULT_BORDER_COLOR
-    private var borderWidth = Utils.convertDpToPx(context, 2F)
+    @Px
+    var borderWidth: Float = context.dpToPx(DEFAULT_BORDER_WIDTH)
+    @ColorInt
+    private var borderColor:Int = Color.WHITE
+    private var initials:String = "??"
+
+    private val maskPaint = Paint(Paint.ANTI_ALIAS_FLAG)
     private val borderPaint = Paint(Paint.ANTI_ALIAS_FLAG)
-    private val circlePaint = Paint(Paint.ANTI_ALIAS_FLAG)
-    private val srcMode = PorterDuffXfermode(Mode.SRC)
-    private val srcInMode = PorterDuffXfermode(Mode.SRC_IN)
+    private val viewRect = Rect()
+    private lateinit var resultBm: Bitmap
+    private lateinit var maskBm: Bitmap
+    private lateinit var srcBm: Bitmap
 
     init {
         if (attrs != null) {
-            val attrVal = context.obtainStyledAttributes(attrs, R.styleable.CircleImageView)
-            borderColor =
-                attrVal.getColor(R.styleable.CircleImageView_cv_borderColor, DEFAULT_BORDER_COLOR)
-            borderWidth = attrVal.getDimensionPixelSize(
+            val ta = context.obtainStyledAttributes(attrs, R.styleable.CircleImageView)
+
+            borderWidth = ta.getDimension(
                 R.styleable.CircleImageView_cv_borderWidth,
-                borderWidth
+                context.dpToPx(DEFAULT_BORDER_WIDTH)
             )
-            attrVal.recycle()
+
+            borderColor = ta.getColor(R.styleable.CircleImageView_cv_borderColor, DEFAULT_BORDER_COLOR)
         }
-        borderPaint.style = Paint.Style.STROKE
-        setLayerType(View.LAYER_TYPE_SOFTWARE, null)
+
+            initials = "??" //TODO change to profile initials
+            scaleType = ScaleType.CENTER_CROP
+            setup()
     }
 
-    @Dimension(unit = DP)
-    fun getBorderWidth(): Int = Utils.convertPxToDp(context, borderWidth)
+    override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec)
 
-    @Dimension(unit = DP)
-    fun setBorderWidth(dp: Int) {
-        borderWidth = Utils.convertDpToPx(context, dp.toFloat())
-        this.invalidate()
+        val initSize = resolveDefaultSize(widthMeasureSpec)
+        setMeasuredDimension(initSize, initSize)
     }
 
-    @ColorInt
-    fun getBorderColor(): Int = borderColor
+    override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
+        super.onSizeChanged(w, h, oldw, oldh)
 
-    fun setBorderColor(hex: String) {
-        borderColor = Color.parseColor(hex)
-        this.invalidate()
-    }
+        if (w==0) return
+        with(viewRect) {
+            left = 0
+            top = 0
+            right = w
+            bottom = h
+        }
 
-    fun setBorderColor(@ColorRes colorId: Int) {
-        borderColor = ContextCompat.getColor(App.applicationContext(), colorId)
-        this.invalidate()
+        prepareBitmaps(w, h)
     }
 
     override fun onDraw(canvas: Canvas) {
-        if (width == 0 || height == 0) return
-        val bitmap = getBitmapFromDrawable(width, height) ?: return
+//        super.onDraw(canvas)
+        canvas.drawBitmap(resultBm, viewRect, viewRect, null)
 
-        val halfWidth = width / 2F
-        val halfHeight = height / 2F
-        val radius = min(halfWidth, halfHeight)
+        val half = (borderWidth/2).toInt()
+        viewRect.inset(half, half)
+        canvas.drawOval(viewRect.toRectF(), borderPaint)
+    }
 
-        circlePaint.xfermode = srcMode
-        canvas.drawCircle(halfWidth, halfHeight, radius, circlePaint)
-        circlePaint.xfermode = srcInMode
-        canvas.drawBitmap(bitmap, 0F, 0F, circlePaint)
+    private fun setup() {
+        with(maskPaint) {
+            color = Color.RED
+            style = Paint.Style.FILL
+        }
 
-        if (borderWidth > 0) {
-            borderPaint.color = borderColor
-            borderPaint.strokeWidth = borderWidth.toFloat()
-            canvas.drawCircle(halfWidth, halfHeight, radius - borderWidth / 2, borderPaint)
+        with(borderPaint) {
+            style = Paint.Style.STROKE
+            strokeWidth = borderWidth
+            color = borderColor
         }
     }
 
-    private fun getBitmapFromDrawable(width: Int, height: Int): Bitmap? {
-        if (drawable == null)
-            return null
+    private fun prepareBitmaps(w: Int, h: Int) {
+        maskBm = Bitmap.createBitmap(w, h, Bitmap.Config.ALPHA_8)
+        resultBm = maskBm.copy(Bitmap.Config.ARGB_8888, true)
+        val maskCanvas = Canvas(maskBm)
+        maskCanvas.drawOval(viewRect.toRectF(), maskPaint)
+        maskPaint.xfermode = PorterDuffXfermode(PorterDuff.Mode.SRC_IN)
+        srcBm = drawable.toBitmap(w, h, Bitmap.Config.ARGB_8888)
 
-        if (drawable is BitmapDrawable)
-            return (drawable as BitmapDrawable).bitmap
+        val resultCanvas = Canvas(resultBm)
 
-        val bmp = drawable.toBitmap(width, height, Config.ARGB_8888)
-        val canvas = Canvas(bmp)
-        drawable.setBounds(0, 0, canvas.width, canvas.height)
-        drawable.draw(canvas)
-        return bmp
+        resultCanvas.drawBitmap(maskBm, viewRect, viewRect, null)
+        resultCanvas.drawBitmap(srcBm, viewRect, viewRect, maskPaint)
+    }
+
+    private fun resolveDefaultSize(spec: Int) : Int{
+        return when(MeasureSpec.getMode(spec)) {
+            MeasureSpec.UNSPECIFIED -> context.dpToPx(DEFAULT_SIZE).toInt()
+            MeasureSpec.AT_MOST -> MeasureSpec.getSize(spec)
+            MeasureSpec.EXACTLY -> MeasureSpec.getSize(spec)
+            else -> MeasureSpec.getSize(spec)
+        }
     }
 }

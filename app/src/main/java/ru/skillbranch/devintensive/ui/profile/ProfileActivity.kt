@@ -16,7 +16,6 @@ import androidx.lifecycle.ViewModelProviders
 import kotlinx.android.synthetic.main.activity_profile.*
 import ru.skillbranch.devintensive.R
 import ru.skillbranch.devintensive.models.Profile
-import ru.skillbranch.devintensive.ui.custom.TextImageView
 import ru.skillbranch.devintensive.utils.Utils
 import ru.skillbranch.devintensive.viewmodels.ProfileViewModel
 
@@ -60,7 +59,7 @@ class ProfileActivity : AppCompatActivity() {
                 v.text = it[k].toString()
             }
         }
-        updateAvatar(profile)
+//        updateAvatar(profile)
     }
 
     private fun initViews(savedInstanceState: Bundle?) {
@@ -171,24 +170,24 @@ class ProfileActivity : AppCompatActivity() {
         }
     }
 
-    private fun updateAvatar(profile: Profile) {
-        Utils.toInitials(profile.firstName, profile.lastName)?.let {
-            if (it != userInitials) {
-                val avatar = getAvatarBitmap(it)
-                iv_avatar.setImageBitmap(avatar)
-            }
-        } ?: iv_avatar.setImageResource(R.drawable.avatar_default)
-    }
-
-    private fun getAvatarBitmap(text: String): Bitmap {
-        val color = TypedValue()
-        theme.resolveAttribute(R.attr.colorAccent, color, true)
-
-        return TextImageView(iv_avatar.layoutParams.width, iv_avatar.layoutParams.height)
-            .setBackgroundColor(color.data)
-            .setText(text)
-            .setTextSize(Utils.convertSpToPx(this, 48))
-            .setTextColor(Color.WHITE)
-            .build()
-    }
+//    private fun updateAvatar(profile: Profile) {
+//        Utils.toInitials(profile.firstName, profile.lastName)?.let {
+//            if (it != userInitials) {
+//                val avatar = getAvatarBitmap(it)
+//                iv_avatar.setImageBitmap(avatar)
+//            }
+//        } ?: iv_avatar.setImageResource(R.drawable.avatar_default)
+//    }
+//
+//    private fun getAvatarBitmap(text: String): Bitmap {
+//        val color = TypedValue()
+//        theme.resolveAttribute(R.attr.colorAccent, color, true)
+//
+//        return TextImageView(iv_avatar.layoutParams.width, iv_avatar.layoutParams.height)
+//            .setBackgroundColor(color.data)
+//            .setText(text)
+//            .setTextSize(Utils.convertSpToPx(this, 48))
+//            .setTextColor(Color.WHITE)
+//            .build()
+//    }
 }

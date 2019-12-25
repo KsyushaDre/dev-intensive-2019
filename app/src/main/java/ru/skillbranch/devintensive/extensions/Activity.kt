@@ -43,3 +43,7 @@ fun Context.convertDpToPx(dp: Float): Float {
         this.resources.displayMetrics
     )
 }
+
+fun Context.dpToPx(dp: Int): Float {
+    return dp.toFloat() * this.resources.displayMetrics.density
+}

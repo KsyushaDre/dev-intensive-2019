@@ -146,8 +146,8 @@ object Utils {
         return (px / context.resources.displayMetrics.density).roundToInt()
     }
 
-    fun convertDpToPx(context: Context, dp: Float): Int {
-        return (dp * context.resources.displayMetrics.density).roundToInt()
+    fun convertDpToPx(context: Context, dp: Int): Float {
+        return dp.toFloat()*context.resources.displayMetrics.density
     }
 
     fun convertSpToPx(context: Context, sp: Int): Int {
