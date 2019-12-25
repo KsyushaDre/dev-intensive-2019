@@ -40,7 +40,7 @@
                     android:layout_width="@dimen/avatar_round_size"
                     android:layout_height="@dimen/avatar_round_size"
                     android:layout_centerHorizontal="true"
-                    android:src="@drawable/unnamed" />
+                    android:src="@drawable/avatar_default" />
 
             <ImageButton
                     android:id="@+id/btn_edit"
@@ -256,8 +256,8 @@
                 android:id="@+id/ic_eye"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:layout_marginLeft="@dimen/spacing_normal_16"
                 android:layout_gravity="center_vertical"
+                android:layout_marginLeft="@dimen/spacing_normal_16"
                 android:src="@drawable/ic_eye_24dp" />
     </LinearLayout>
 </LinearLayout>
