@@ -89,7 +89,7 @@ class ProfileActivity : AppCompatActivity() {
                     if (!Utils.isValidUrlRepository(s.toString()) && !s.isNullOrEmpty()) {
                         wr_repository.error = "Невалидный адрес репозитория"
                     } else {
-                        wr_repository.error = ""
+                        wr_repository.isErrorEnabled = false
                     }
                 }
             }
