@@ -30,10 +30,11 @@ class CircleImageView @JvmOverloads constructor(
         private const val DEFAULT_SIZE = 40
         private var initials: String? = null
         fun setInitials(init: String?) {
-            if (init != null) initials = init else initials = null
+            initials = if (init != null) init else null
         }
 
-        private var bgColor: Int = Color.BLACK
+        private var bgColor: Int? = null
+
         fun setBgColor(initColor: Int) {
             bgColor = initColor
         }
@@ -168,7 +169,9 @@ class CircleImageView @JvmOverloads constructor(
     }
 
     private fun drawInitials(canvas: Canvas) {
-        initialsPaint.color = bgColor
+        if (bgColor != null) {
+            initialsPaint.color = bgColor as Int
+        }
         canvas.drawOval(viewRect.toRectF(), initialsPaint)
         with(initialsPaint) {
             color = Color.WHITE
