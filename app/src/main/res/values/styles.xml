@@ -1,9 +1,4 @@
 <resources>
-
-
-
-
-
     <style name="Profile"> </style>
     <style name="Profile.EditText" parent="Profile">
         <item name="android:textColor">?attr/colorPrimary</item>
