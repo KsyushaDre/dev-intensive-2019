@@ -108,13 +108,14 @@ class CircleImageView @JvmOverloads constructor(
         if (initials == null) prepareShader(width, height)
     }
 
-    fun setInitials (initials: String) {
+    fun setInitials(initials: String) {
         this.initials = initials
         invalidate()
     }
 
-    fun setBgColor (bgColor: Int?) {
-        if (bgColor != null) this.bgColor = bgColor else this.bgColor = ContextCompat.getColor(context, R.color.color_accent)
+    fun setBgColor(bgColor: Int?) {
+        if (bgColor != null) this.bgColor = bgColor else this.bgColor =
+            ContextCompat.getColor(context, R.color.color_accent)
     }
 
     @Dimension
@@ -142,6 +143,7 @@ class CircleImageView @JvmOverloads constructor(
         borderPaint.color = borderColor
         invalidate()
     }
+
     private fun setup() {
         with(borderPaint) {
             style = Paint.Style.STROKE

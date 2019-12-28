@@ -77,7 +77,8 @@ class ProfileActivity : AppCompatActivity() {
             "respect" to tv_respect
         )
 
-        if (iv_avatar is CircleImageView) circleImageView = iv_avatar else imageViewAvatar = iv_avatar
+        if (iv_avatar is CircleImageView) circleImageView = iv_avatar else imageViewAvatar =
+            iv_avatar
 
         isEditMode = savedInstanceState?.getBoolean(IS_EDIT_MODE, false) ?: false
         showCurrentMode(isEditMode)
@@ -174,13 +175,11 @@ class ProfileActivity : AppCompatActivity() {
 
     private fun updateAvatar(profile: Profile) {
         userInitials = Utils.toInitials(profile.firstName, profile.lastName)
-        if (userInitials!=null && circleImageView != null) {
+        if (userInitials != null && circleImageView != null) {
             circleImageView!!.setInitials(userInitials!!)
             val color = TypedValue()
             theme.resolveAttribute(R.attr.colorAccent, color, true)
             circleImageView!!.setBgColor(color.data)
-        } else {
-            iv_avatar.setImageResource(R.drawable.avatar_default)
         }
     }
 }
