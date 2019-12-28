@@ -8,15 +8,13 @@ import android.widget.ImageView
 import androidx.annotation.ColorInt
 import androidx.annotation.ColorRes
 import androidx.annotation.Dimension
-import androidx.annotation.Dimension.DP
 import androidx.annotation.Px
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toBitmap
 import androidx.core.graphics.toRectF
-import ru.skillbranch.devintensive.App
 import ru.skillbranch.devintensive.R
 import ru.skillbranch.devintensive.extensions.dpToPx
-import ru.skillbranch.devintensive.utils.Utils
+import ru.skillbranch.devintensive.extensions.pxToDp
 
 class CircleImageView @JvmOverloads constructor(
     context: Context,
@@ -28,16 +26,6 @@ class CircleImageView @JvmOverloads constructor(
         private const val DEFAULT_BORDER_WIDTH = 2
         private const val DEFAULT_BORDER_COLOR = Color.WHITE
         private const val DEFAULT_SIZE = 40
-        private var initials: String? = null
-        fun setInitials(init: String?) {
-            initials = if (init != null) init else null
-        }
-
-        private var bgColor: Int? = null
-
-        fun setBgColor(initColor: Int) {
-            bgColor = initColor
-        }
     }
 
     @Px
@@ -45,12 +33,13 @@ class CircleImageView @JvmOverloads constructor(
     @ColorInt
     private var borderColor: Int = Color.WHITE
 
-
     private val avatarPaint = Paint(Paint.ANTI_ALIAS_FLAG)
     private val borderPaint = Paint(Paint.ANTI_ALIAS_FLAG)
     private val initialsPaint = Paint(Paint.ANTI_ALIAS_FLAG)
     private val viewRect = Rect()
     private val borderRect = Rect()
+    private var initials: String? = null
+    private var bgColor: Int? = null
 
     init {
         if (attrs != null) {
@@ -104,28 +93,6 @@ class CircleImageView @JvmOverloads constructor(
         canvas.drawOval(borderRect.toRectF(), borderPaint)
     }
 
-    @Dimension(unit = DP)
-    fun getBorderWidth(): Int = Utils.convertPxToDp(context, borderWidth.toInt())
-
-    @Dimension(unit = DP)
-    fun setBorderWidth(dp: Int) {
-        borderWidth = Utils.convertDpToPx(context, dp)
-        this.invalidate()
-    }
-
-    @ColorInt
-    fun getBorderColor(): Int = borderColor
-
-    fun setBorderColor(hex: String) {
-        borderColor = Color.parseColor(hex)
-        this.invalidate()
-    }
-
-    fun setBorderColor(@ColorRes colorId: Int) {
-        borderColor = ContextCompat.getColor(App.applicationContext(), colorId)
-        this.invalidate()
-    }
-
     override fun setImageBitmap(bm: Bitmap?) {
         super.setImageBitmap(bm)
         if (initials == null) prepareShader(width, height)
@@ -141,6 +108,40 @@ class CircleImageView @JvmOverloads constructor(
         if (initials == null) prepareShader(width, height)
     }
 
+    fun setInitials (initials: String) {
+        this.initials = initials
+        invalidate()
+    }
+
+    fun setBgColor (bgColor: Int?) {
+        if (bgColor != null) this.bgColor = bgColor else this.bgColor = ContextCompat.getColor(context, R.color.color_accent)
+    }
+
+    @Dimension
+    fun getBorderWidth(): Int {
+        return context.pxToDp(borderWidth)
+    }
+
+    fun setBorderWidth(@Dimension width: Int) {
+        borderWidth = context.dpToPx(width)
+        borderPaint.strokeWidth = borderWidth
+        invalidate()
+    }
+
+    @ColorInt
+    fun getBorderColor(): Int = borderColor
+
+    fun setBorderColor(hex: String) {
+        borderColor = Color.parseColor(hex)
+        borderPaint.color = borderColor
+        invalidate()
+    }
+
+    fun setBorderColor(@ColorRes colorId: Int) {
+        borderColor = ContextCompat.getColor(context, colorId)
+        borderPaint.color = borderColor
+        invalidate()
+    }
     private fun setup() {
         with(borderPaint) {
             style = Paint.Style.STROKE

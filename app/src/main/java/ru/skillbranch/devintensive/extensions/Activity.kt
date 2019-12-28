@@ -6,6 +6,7 @@ import android.graphics.Rect
 import android.util.TypedValue
 import android.view.View
 import android.view.inputmethod.InputMethodManager
+import androidx.annotation.Px
 import kotlin.math.roundToInt
 
 fun Activity.hideKeyboard() {
@@ -46,4 +47,8 @@ fun Context.convertDpToPx(dp: Float): Float {
 
 fun Context.dpToPx(dp: Int): Float {
     return dp.toFloat() * this.resources.displayMetrics.density
+}
+
+fun Context.pxToDp (@Px px: Float): Int {
+    return (px/this.resources.displayMetrics.density).toInt()
 }

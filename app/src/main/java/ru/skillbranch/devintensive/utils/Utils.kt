@@ -141,16 +141,4 @@ object Utils {
 
         return string.matches(regex)
     }
-
-    fun convertPxToDp(context: Context, px: Int): Int {
-        return (px / context.resources.displayMetrics.density).roundToInt()
-    }
-
-    fun convertDpToPx(context: Context, dp: Int): Float {
-        return dp.toFloat()*context.resources.displayMetrics.density
-    }
-
-    fun convertSpToPx(context: Context, sp: Int): Int {
-        return sp * context.resources.displayMetrics.scaledDensity.roundToInt()
-    }
 }
