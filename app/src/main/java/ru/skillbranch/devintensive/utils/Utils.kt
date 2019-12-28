@@ -137,7 +137,7 @@ object Utils {
     fun isValidUrlRepository(string: String): Boolean {
 
         val regex =
-            Regex("""(https://|www\.|https://www\.)?github.com[/](?!pricing|enterprise|join|features|topics|collections|trending|events|marketplace|nonprofit|customer-stories|security|login)(?! )[a-zA-Z]+""")
+            Regex("""(https://|www\.|https://www\.)?github.com[/](?!pricing|enterprise|join|features|topics|collections|trending|events|marketplace|nonprofit|customer-stories|security|login)(?! )[a-zA-Z0-9-]+""")
 
         return string.matches(regex)
     }
