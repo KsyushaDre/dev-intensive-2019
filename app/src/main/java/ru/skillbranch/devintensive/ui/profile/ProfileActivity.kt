@@ -8,7 +8,6 @@ import android.util.Log
 import android.util.TypedValue
 import android.view.View
 import android.widget.EditText
-import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
@@ -31,7 +30,6 @@ class ProfileActivity : AppCompatActivity() {
     lateinit var viewFields: Map<String, TextView>
     private var userInitials: String? = null
     private var circleImageView: CircleImageView? = null
-    private var imageViewAvatar: ImageView? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(R.style.AppTheme)
@@ -77,8 +75,7 @@ class ProfileActivity : AppCompatActivity() {
             "respect" to tv_respect
         )
 
-        if (iv_avatar is CircleImageView) circleImageView = iv_avatar else imageViewAvatar =
-            iv_avatar
+        if (iv_avatar is CircleImageView) circleImageView = iv_avatar
 
         isEditMode = savedInstanceState?.getBoolean(IS_EDIT_MODE, false) ?: false
         showCurrentMode(isEditMode)
@@ -153,7 +150,7 @@ class ProfileActivity : AppCompatActivity() {
         }
     }
 
-    private fun saveProfileInfo() {
+    private fun saveProfileInfo(){
         var repositoryUrl: String = et_repository.text.toString()
 
         if (!Utils.isValidUrlRepository(repositoryUrl)) {
@@ -175,7 +172,7 @@ class ProfileActivity : AppCompatActivity() {
 
     private fun updateAvatar(profile: Profile) {
         userInitials = Utils.toInitials(profile.firstName, profile.lastName)
-        if (userInitials != null && circleImageView != null) {
+        if (userInitials != null) {
             circleImageView!!.setInitials(userInitials!!)
             val color = TypedValue()
             theme.resolveAttribute(R.attr.colorAccent, color, true)

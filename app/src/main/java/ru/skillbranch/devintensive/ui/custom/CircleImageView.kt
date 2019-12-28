@@ -81,10 +81,10 @@ class CircleImageView @JvmOverloads constructor(
     }
 
     override fun onDraw(canvas: Canvas) {
-        if (drawable != null && initials == null) {
-            drawAvatar(canvas)
-        } else {
+        if (initials != null) {
             drawInitials(canvas)
+        } else {
+            drawAvatar(canvas)
         }
 
         val half = (borderWidth / 2).toInt()
