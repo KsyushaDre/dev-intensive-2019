@@ -152,7 +152,6 @@ class ProfileActivity : AppCompatActivity() {
         }
     }
 
-
     private fun saveProfileInfo() {
         var repositoryUrl: String = et_repository.text.toString()
 
@@ -162,8 +161,6 @@ class ProfileActivity : AppCompatActivity() {
 
         val firstN = et_first_name.text.toString()
         val lastN = et_last_name.text.toString()
-
-        userInitials = Utils.toInitials(firstN, lastN)
 
         Profile(
             firstName = firstN,
@@ -176,13 +173,14 @@ class ProfileActivity : AppCompatActivity() {
     }
 
     private fun updateAvatar(profile: Profile) {
-        Utils.toInitials(profile.firstName, profile.lastName)?.let {
-            if (it != userInitials && circleImageView != null) {
-                circleImageView!!.setInitials(it)
-                val color = TypedValue()
-                theme.resolveAttribute(R.attr.colorAccent, color, true)
-                circleImageView!!.setBgColor(color.data)
-            }
-        } ?: iv_avatar.setImageResource(R.drawable.avatar_default)
+        userInitials = Utils.toInitials(profile.firstName, profile.lastName)
+        if (userInitials!=null && circleImageView != null) {
+            circleImageView!!.setInitials(userInitials!!)
+            val color = TypedValue()
+            theme.resolveAttribute(R.attr.colorAccent, color, true)
+            circleImageView!!.setBgColor(color.data)
+        } else {
+            iv_avatar.setImageResource(R.drawable.avatar_default)
+        }
     }
 }

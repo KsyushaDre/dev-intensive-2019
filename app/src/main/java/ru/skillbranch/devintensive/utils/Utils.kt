@@ -1,8 +1,6 @@
 package ru.skillbranch.devintensive.utils
 
-import android.content.Context
 import java.lang.StringBuilder
-import kotlin.math.roundToInt
 
 object Utils {
 
